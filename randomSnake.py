@@ -1,6 +1,6 @@
 import numpy as np
 from ple import PLE
-from ple.games.raycastmaze import RaycastMaze
+from ple.games.snake import Snake
 
 
 class NaiveAgent():
@@ -15,10 +15,7 @@ class NaiveAgent():
         return self.actions[np.random.randint(0, len(self.actions))]
 
 ###################################
-game = RaycastMaze(
-    map_size=6
-)  # create our game
-
+game = Snake(width=400,height=400, init_length=3)  
 fps = 30  # fps we want to run at
 frame_skip = 2
 num_steps = 1
@@ -53,5 +50,5 @@ for f in range(nb_frames):
     action = agent.pickAction(reward, obs)
     reward = p.act(action)
 
-    if f % 50 == 0:
-        p.saveScreen("screen_capture.png")
+    # if f % 50 == 0:
+    #     p.saveScreen("screen_capture.png")

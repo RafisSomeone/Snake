@@ -12,7 +12,7 @@ rewards = {
 
 # make a PLE instance.
 # use lower fps so we can see whats happening a little easier
-game = Snake()
+game = Snake(width=400,height=400, init_length=3)
 p = PLE(game, fps=15, force_fps=False, display_screen=True,
         reward_values=rewards)
 # we pass in the rewards and PLE will adjust the game for us
