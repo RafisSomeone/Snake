@@ -1,18 +1,29 @@
-from ple.games.flappybird import FlappyBird
+import numpy as np
 from ple import PLE
+from ple.games.snake import Snake
 
 
-game = FlappyBird()
-p = PLE(game, fps=30, display_screen=True)
-agent = myAgentHere(allowed_actions=p.getActionSet())
+# lets adjust the rewards our agent recieves
+rewards = {
+    "tick": -0.01,  # each time the game steps forward in time the agent gets -0.1
+    "positive": 1.0,  # each time the agent collects a green circle
+    "negative": -5.0,  # each time the agent bumps into a red circle
+}
+
+# make a PLE instance.
+# use lower fps so we can see whats happening a little easier
+game = Snake()
+p = PLE(game, fps=15, force_fps=False, display_screen=True,
+        reward_values=rewards)
+# we pass in the rewards and PLE will adjust the game for us
 
 p.init()
-reward = 0.0
+actions = p.getActionSet()
+for i in range(1000):
+    if p.game_over():
+        p.reset_game()
 
-for i in range(nb_frames):
-   if p.game_over():
-           p.reset_game()
+    action = actions[np.random.randint(0, len(actions))]  # random actions
+    reward = p.act(action)
 
-   observation = p.getScreenRGB()
-   action = agent.pickAction(reward, observation)
-   reward = p.act(action)
+    print("Score: {:0.3f} | Reward: {:0.3f} ".format(p.score(), reward))
