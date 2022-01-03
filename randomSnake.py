@@ -1,4 +1,5 @@
 import numpy as np
+from QSnake import QLearner
 from ple import PLE
 from ple.games.snake import Snake
 
@@ -31,7 +32,7 @@ p = PLE(game, fps=fps, frame_skip=frame_skip, num_steps=num_steps,
         force_fps=force_fps, display_screen=display_screen)
 
 # our Naive agent!
-agent = NaiveAgent(p.getActionSet())
+agent = QLearner(p.getActionSet())
 
 # init agent and game.
 p.init()
@@ -47,7 +48,7 @@ for f in range(nb_frames):
         p.reset_game()
 
     obs = p.getScreenRGB()
-    action = agent.pickAction(reward, obs)
+    action = agent.learn(reward, obs)
     reward = p.act(action)
 
     # if f % 50 == 0:

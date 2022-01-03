@@ -47,11 +47,12 @@ class PyGameWrapper(object):
         self.rng = None
 
         self.rewards = {
-            "positive": 1.0,
+            "positive": 1000.0,
             "negative": -1.0,
             "tick": 0,
-            "loss": -5.0,
-            "win": 5.0
+            "loss": -200.0,
+            "win": 5.0,
+            "lost": -100
         }
 
     def _setup(self):

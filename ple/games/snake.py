@@ -1,3 +1,4 @@
+import os
 import pygame
 import sys
 import math
@@ -9,7 +10,9 @@ from pygame.constants import K_w, K_a, K_s, K_d
 from .utils.vec2d import vec2d
 from .utils import percent_round_int
 
-
+DRAW = True
+MAX_TIME = 200
+# os.environ["SDL_VIDEODRIVER"] = "dummy"
 class Food(pygame.sprite.Sprite):
 
     def __init__(self, pos_init, width, color,
@@ -87,7 +90,8 @@ class SnakeSegment(pygame.sprite.Sprite):
         self.rect.center = pos_init
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect.center)
+        if DRAW:
+            screen.blit(self.image, self.rect.center)
 
 
 # basically just holds onto all of them
@@ -201,8 +205,9 @@ class SnakePlayer():
             self.body_group.add(self.body[-1])
 
     def draw(self, screen):
-        for b in self.body[::-1]:
-            b.draw(screen)
+        if DRAW:
+            for b in self.body[::-1]:
+                b.draw(screen)
 
 
 class Snake(PyGameWrapper):
@@ -232,6 +237,8 @@ class Snake(PyGameWrapper):
             "down": K_s
         }
 
+        self.lost = 0
+        self.isLostOn = True
         PyGameWrapper.__init__(self, width, height, actions=actions)
 
         self.speed = percent_round_int(width, 0.45)
@@ -353,11 +360,13 @@ class Snake(PyGameWrapper):
         self.screen.fill(self.BG_COLOR)
         self._handle_player_events()
         self.score += self.rewards["tick"]
-
+        self.lost += 1
         hit = pygame.sprite.collide_rect(self.player.head, self.food)
         if hit:  # it hit
+            self.lost = 0
             self.score += self.rewards["positive"]
-            self.player.grow()
+            if self.player.length < 10:
+                self.player.grow()
             self.food.new_position(self.player)
 
         hits = pygame.sprite.spritecollide(
@@ -378,9 +387,14 @@ class Snake(PyGameWrapper):
 
         if x_check or y_check:
             self.lives = -1
-
+        
         if self.lives <= 0.0:
             self.score += self.rewards["loss"]
+
+        if self.lost > MAX_TIME and self.isLostOn:
+            self.lives = -1
+            self.score += self.rewards["lost"]
+            self.lost = 0
 
         self.player.update(dt)
 
