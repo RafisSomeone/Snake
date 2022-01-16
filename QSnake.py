@@ -43,7 +43,6 @@ class QLearner:
         print(f'screen {self.actions[np.random.randint(0, len(self.actions))]}')
 
     def learn(self, max_attempts,results,j, sigma, alpha, epsilon):
-        print(results,j)
         result = []
         infinite = True
         for i in range(max_attempts):
@@ -167,7 +166,7 @@ class QLearner:
 
         norm_vector = head_food_vector/head_food_distance
 
-        distance_from_obstackle = 12
+        distance_from_obstackle = 30
         distance_from_wall = 30
         x_head = state['snake_head_x']
         y_head  = state['snake_head_y']
