@@ -228,7 +228,7 @@ class Snake(PyGameWrapper):
     def __init__(self,
                  width=64,
                  height=64,
-                 init_length=3):
+                 init_length=10):
 
         actions = {
             "up": K_w,
@@ -365,8 +365,7 @@ class Snake(PyGameWrapper):
         if hit:  # it hit
             self.lost = 0
             self.score += self.rewards["positive"]
-            if self.player.length < 10:
-                self.player.grow()
+            # self.player.grow()
             self.food.new_position(self.player)
 
         hits = pygame.sprite.spritecollide(

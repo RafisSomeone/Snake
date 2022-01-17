@@ -10,9 +10,12 @@ import matplotlib.pyplot as plt
 import threading
 import functools
 import pickle
+import sys
+import csv
 
 from ple.ple import PLE
-filename = 'QSnakeData.pickle'
+snake_length = int(sys.argv[1]) 
+filename = f'New_Length{snake_length}compact_QSnakeData.pickle'
 class QLearner:
     def __init__(self):
         try:
@@ -23,13 +26,13 @@ class QLearner:
         fps = 30  # fps we want to run at
         frame_skip = 2
         num_steps = 1
-        force_fps = False  # slower speed
-        display_screen = True
+        force_fps = True  # slower speed
+        display_screen = False
 
         reward = 0.0
         max_noops = 20
         nb_frames = 15000
-        self.game = Snake(width=400,height=400, init_length=3)  
+        self.game = Snake(width=400,height=400, init_length=snake_length)  
         self.p = PLE(self.game, fps=fps, frame_skip=frame_skip, num_steps=num_steps,
         force_fps=force_fps, display_screen=display_screen)
         self.attempt_no = 1
@@ -47,6 +50,8 @@ class QLearner:
         infinite = True
         for i in range(max_attempts):
             reward_sum = self.attempt(i, max_attempts,sigma, alpha, epsilon)
+            with open(f'Reward{snake_length}compacted.csv', 'a+', encoding='UTF8') as f:
+                f.write(str(reward_sum) + '\n')
             result.append(reward_sum)
             if infinite:
                 i -= 1
@@ -235,7 +240,8 @@ def main():
     sigmas = [0.99] 
     alphas = [0.01]
     epsilons = [0.01]
-    QLearner().learn(3000000,[],0,sigmas[0],alphas[0],epsilons[0])
+    results = []
+    QLearner().learn(3000000,results,0,sigmas[0],alphas[0],epsilons[0])
     # for s in range(len(sigmas)):
     #     max_attempts = 3000
     #     thread_number = 1
@@ -247,11 +253,11 @@ def main():
     #         threads[i] = threading.Thread(target=lerners[i].learn, args=(max_attempts,results,i,sigmas[s],alphas[s],epsilons[s]))
     #         threads[i].start()
 
-    #     for i in range(len(threads)):
-    #         threads[i].join()
-            # with open(f'sarsa/Results_{s}_{i}.csv', 'w+', encoding='UTF8') as f:
-            #     for reward in results[i]:
-            #         f.write(str(reward) + '\n')
+        # for i in range(len(threads)):
+        #     threads[i].join()
+        #     with open(f'sarsa/Results_{s}_{i}.csv', 'w+', encoding='UTF8') as f:
+        #         for reward in results[i]:
+        #             f.write(str(reward) + '\n')
         # moving_average_result = moving_average(results[1])
 
         # plt.plot(moving_average_result)
