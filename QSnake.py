@@ -15,9 +15,10 @@ import csv
 
 from ple.ple import PLE
 snake_length = int(sys.argv[1]) 
-filename = f'New_Length{snake_length}compact_QSnakeData.pickle'
+
 class QLearner:
     def __init__(self):
+        filename = f'New_Length{snake_length}compact_QSnakeData.pickle'
         try:
             with open(filename, "rb") as file:
                 self.Q = pickle.load(file)
@@ -26,9 +27,9 @@ class QLearner:
         fps = 30  # fps we want to run at
         frame_skip = 2
         num_steps = 1
-        force_fps = True  # slower speed
-        display_screen = False
-
+        force_fps = False  # slower speed
+        display_screen = True
+        self.length_snaking = 1
         reward = 0.0
         max_noops = 20
         nb_frames = 15000
@@ -72,6 +73,7 @@ class QLearner:
         epsilon = epsilon_s
         sigma = sigma_s
         alpha = alpha_s
+        filename = f'New_Length{self.game.player.length}compact_QSnakeData.pickle'
         if attempt_i % 1000 == 0:
             with open(filename,'wb' ) as file:
                 pickle.dump(dict(self.Q), file)
@@ -88,13 +90,20 @@ class QLearner:
         done = False
         reward_sum = 0.0
         while not done:
+            filename = f'New_Length{self.game.player.length}compact_QSnakeData.pickle'
+            try:
+                with open(filename, "rb") as file:
+                    print(filename)
+                    self.Q = pickle.load(file)
+            except:
+                print('error')
+                self.Q = {}
             action = self.pick_action(observation,epsilon)
             reward = self.p.act(action)
             state = self.p.getGameState()
             new_observation = self.discretise(state, oldState)
             oldState = state
             reward = self.get_reward(observation,new_observation,reward)
-
             self.update_knowledge(action, observation, new_observation, reward, alpha, sigma)
             # self.update_knowledge_SARSA(action, observation, new_observation, reward, alpha, sigma,epsilon)
             observation = new_observation

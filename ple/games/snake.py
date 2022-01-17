@@ -365,7 +365,7 @@ class Snake(PyGameWrapper):
         if hit:  # it hit
             self.lost = 0
             self.score += self.rewards["positive"]
-            # self.player.grow()
+            self.player.grow()
             self.food.new_position(self.player)
 
         hits = pygame.sprite.spritecollide(
