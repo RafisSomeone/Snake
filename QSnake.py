@@ -28,7 +28,7 @@ class QLearner:
         fps = 30  # fps we want to run at
         frame_skip = 2
         num_steps = 1
-        force_fps = False  # slower speed
+        force_fps = True  # slower speed
         display_screen = True
         self.length_snaking = 1
         reward = 0.0
@@ -114,7 +114,7 @@ class QLearner:
                 self.p.reset_game()
                 done = True
             index += 1 
-            pygame.image.save(self.game.screen, f"screen_all_{index}.jpeg")
+            pygame.image.save(self.game.screen, f"newcomp/screen_all_{index}.jpeg")
         self.attempt_no += 1
         return reward_sum
 
