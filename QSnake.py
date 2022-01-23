@@ -12,6 +12,7 @@ import functools
 import pickle
 import sys
 import csv
+import pygame
 
 from ple.ple import PLE
 snake_length = int(sys.argv[1]) 
@@ -89,6 +90,7 @@ class QLearner:
         observation = self.discretise(oldState,None)
         done = False
         reward_sum = 0.0
+        index = 0 
         while not done:
             filename = f'New_Length{self.game.player.length}compact_QSnakeData.pickle'
             try:
@@ -111,6 +113,8 @@ class QLearner:
             if self.p.game_over():
                 self.p.reset_game()
                 done = True
+            index += 1 
+            pygame.image.save(self.game.screen, f"screen_all_{index}.jpeg")
         self.attempt_no += 1
         return reward_sum
 
