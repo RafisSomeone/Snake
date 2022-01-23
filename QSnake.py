@@ -12,10 +12,11 @@ import functools
 import pickle
 import sys
 import csv
+import pygame
 
 from ple.ple import PLE
 snake_length = int(sys.argv[1]) 
-filename = f'New_Length{snake_length}compact_QSnakeData.pickle'
+filename = f'New_Length3_withLimit10_QSnakeData.pickle'
 class QLearner:
     def __init__(self):
         try:
@@ -27,7 +28,7 @@ class QLearner:
         frame_skip = 2
         num_steps = 1
         force_fps = True  # slower speed
-        display_screen = False
+        display_screen = True
 
         reward = 0.0
         max_noops = 20
@@ -87,6 +88,7 @@ class QLearner:
         observation = self.discretise(oldState,None)
         done = False
         reward_sum = 0.0
+        index = 0
         while not done:
             action = self.pick_action(observation,epsilon)
             reward = self.p.act(action)
@@ -102,6 +104,8 @@ class QLearner:
             if self.p.game_over():
                 self.p.reset_game()
                 done = True
+            index += 1 
+            pygame.image.save(self.game.screen, f"length3limit10/screen_all_{index}.jpeg")
         self.attempt_no += 1
         return reward_sum
 
